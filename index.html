@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>家族台股查詢</title>
+<style>
+body{font-family:"Segoe UI","Microsoft JhengHei",sans-serif;margin:0;background:#f5f5f2;color:#222}
+header{background:#2f3a44;color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:20px}header p{margin:4px 0 0;color:#c8cdd2;font-size:13px}
+nav{display:flex;flex-wrap:wrap;gap:8px;padding:10px 20px;background:#e9e7e1}
+nav a{text-decoration:none;color:#2f3a44;background:#fff;border:1px solid #cfcbc2;border-radius:6px;padding:7px 12px;font-size:14px}
+nav a.on{background:#2f3a44;color:#fff}
+main{padding:16px 20px;max-width:1100px}section.tab{display:none}section.tab.on{display:block}
+.card{background:#fff;border:1px solid #ddd9d0;border-radius:8px;padding:14px;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #d8d4cb;padding:6px 8px;text-align:left}
+th{background:#f0eee9}.warn{color:#a3541e}.muted{color:#6b7280;font-size:13px}
+input,select{font:inherit;padding:7px 9px;border:1px solid #c9c5bb;border-radius:6px}
+.badge{display:inline-block;border:1px solid #cfcbc2;border-radius:999px;padding:2px 10px;font-size:12px;margin-right:6px}
+</style></head><body>
+<header><h1>家族台股查詢</h1><p>各模組資料日期｜大盤：—（資料更新中）｜推薦：—（資料更新中）｜復盤：—（資料更新中）｜日報：—（資料更新中）</p></header>
+<nav><a href="#dapan" data-tab="dapan">大盤預測</a><a href="#tuijian" data-tab="tuijian">今日推薦</a><a href="#gegu" data-tab="gegu">個股查詢</a><a href="#fupan" data-tab="fupan">追蹤復盤</a><a href="#shuoming" data-tab="shuoming">篩選說明</a><a href="#dingyue" data-tab="dingyue">訂閱頻道日報</a></nav><main><section class="tab" id="t-dapan"><h2>大盤預測</h2><p>資料更新中</p></section><section class="tab" id="t-tuijian"><h2>今日推薦</h2><p>資料更新中</p></section><section class="tab" id="t-gegu"><h2>個股查詢</h2><div class="card"><p>輸入代號或名稱，查該股今日屬於哪一類。資料日期：資料更新中</p><input id="q" placeholder="例如 1477 或 聚陽"> <button onclick="geguSearch()">查詢</button><div id="geguRes" style="margin-top:10px"></div></div><script>window.STOCK_DATA=[];</script></section><section class="tab" id="t-fupan"><h2>追蹤復盤</h2><p>資料更新中</p></section><section class='tab' id='t-shuoming'><h2>篩選說明（V2 鎖定條件）</h2><div class='card'><ul><li>排除產業別含 ETF 者。</li><li>成交額（百萬）≥50 且成交張數 ≥200。</li><li>本益比 &gt;0 且 &lt;20，且最新單季年估 ROE(%) &gt;10。</li><li>成交價 &lt; 混和平均法合理價。</li><li>三大法人一個月累計 CV &gt;0。</li><li>相對資料存在時，三項（相對本益比小、相對殖利率大、相對股價淨值比小）至少符合兩項。</li><li>K、D、融資水位、價格位置、均張分位數、買進訊號只作觀察欄。</li><li>相對缺資料者另列、不併入不合格。</li></ul></div></section><section class="tab" id="t-dingyue"><h2>訂閱頻道日報</h2><p>資料更新中</p></section></main>
+<script>
+function show(){var h=(location.hash||"#dapan").slice(1);
+document.querySelectorAll("section.tab").forEach(function(s){s.classList.toggle("on",s.id==="t-"+h)});
+document.querySelectorAll("nav a").forEach(function(a){a.classList.toggle("on",a.dataset.tab===h)});}
+window.addEventListener("hashchange",show);show();
+function geguSearch(){
+var q=document.getElementById("q").value.trim().toLowerCase(),box=document.getElementById("geguRes");
+if(!q){box.innerHTML='<p class="muted">請輸入代號或名稱。</p>';return;}
+var out=[];
+(window.STOCK_DATA||[]).forEach(function(s){
+if(s.code.toLowerCase().indexOf(q)>=0||s.name.indexOf(q)>=0)out.push(s);});
+if(!out.length){box.innerHTML='<p>查無此股（今日三類名單皆無）。</p>';return;}
+var h="<table><tr><th>代號</th><th>名稱</th><th>類別</th><th>成交價</th><th>CV</th><th>相對符合數</th><th>備註</th></tr>";
+out.forEach(function(s){h+="<tr><td>"+s.code+"</td><td>"+s.name+"</td><td>"+s.cat+"</td><td>"+s.price+"</td><td>"+s.cv+"</td><td>"+s.rel+"</td><td>"+s.note+"</td></tr>";});
+box.innerHTML=h+"</table>";}
+function fupanFilter(){
+var v=document.getElementById("fupanSel").value;
+document.querySelectorAll("#fupanRows tr[data-code]").forEach(function(r){
+r.style.display=(!v||r.dataset.code===v)?"":"none";});}
+</script></body></html>
